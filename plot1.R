@@ -10,9 +10,10 @@ plot1 <- function() {
   
   #This is a terrific function to add up column numbers:
   plotdata<-ddply(data,.(year),summarize,sum=sum(Emissions))
-  
+  #Takes care of scientific notation
+  options(scipen=5)
   png("plot1.png")
-  plot(plotdata$year,plotdata$sum,type="b",xlab="Year",ylab="Emission Totals", col="Red")
+  plot(plotdata$year,plotdata$sum,type="h",xlab="Year",ylab="Emission Totals", col="Red")
   dev.off()
   
   return(plotdata)
