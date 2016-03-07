@@ -12,10 +12,11 @@ plot3 <- function() {
   plotdata<-ddply(NEI, c("year", "type"),summarize,sum=sum(Emissions))
   #NEIsub<-head(NEI, n=1000000)
 png("plot3.png")
- qplot(year, sum, data=plotdata, geom="point", color=type, size=I(5), alpha=I(.5), 
+p<-qplot(year, sum, data=plotdata, geom="point", color=type, size=I(5), alpha=I(.5), 
        main="Baltimore City, Maryland", xlab="Type of Source", ylab="Emissions")
+print(p)
  dev.off()
  
-  return(plotdata)
+  #return(p)
   
 }
