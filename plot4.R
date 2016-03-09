@@ -1,38 +1,39 @@
 plot4 <- function() {
   
-  library("dplyr")
-  library("plyr")
   library ("ggplot2")
   
+  #Read data
   NEI <- readRDS("exdata-data-NEI_data/summarySCC_PM25.rds")
   SCC <- readRDS("exdata-data-NEI_data/Source_Classification_Code.rds")
   
+  #Merge the 2 dataframes
   merged <- merge(NEI, SCC, by="SCC")
   
-  y<-filter(merged, grepl('[Cc]oal', merged$Short.Name)|
+  #Filter out data based on use of Coal
+  merged<-filter(merged, grepl('[Cc]oal', merged$Short.Name)|
               grepl('[Cc]oal', merged$EI.Sector)|
-            grepl('[Cc]oal', merged$SCC.Level.One)|
+              grepl('[Cc]oal', merged$SCC.Level.One)|
               grepl('[Cc]oal', merged$SCC.Level.Two)|
               grepl('[Cc]oal', merged$SCC.Level.Three)|
               grepl('[Cc]oal', merged$SCC.Level.Four)
-              )
+  )
   
- # y = subset(y, fips=="24510", select=c(Emissions, year)) 
-  plotdata<-ddply(y, c("year"),summarize,sum=sum(Emissions))
+  #Create aggregate of data and sum up the emissions.
+  plotdata <- aggregate(Emissions ~ year, data=merged, FUN=sum)
   
-  png("plot4.png")
-  p<-qplot(year, sum, data=plotdata, geom="point", size=I(5), alpha=I(.5), 
-           main="Coal-Combustion Related Sources", xlab="Year", ylab="Emissions")
+  #Build graph.
+  #png("plot4.png")
+  p<-ggplot(plotdata, aes(x=factor(year), y=Emissions)) +
+    geom_bar(stat="identity") +
+    xlab("year") +
+    ylab(expression("PM"[2.5]*" Emissions")) +
+    ggtitle("Emissions from Coal Related Sources")
   print(p)
-  dev.off()
-  
-
-return(y)
+  #dev.off()
   
 }
 
 
 
 
-  
-  
+
